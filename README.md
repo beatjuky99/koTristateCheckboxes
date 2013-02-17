@@ -7,7 +7,8 @@ Tristate Boolean extension for Knockout.js
 
 It's so easy to create a tristate Checkbox with knockout.js and this plugin...
 
-</html>
+```html
+<html>
 	<head>
 		<script type="text/javascript" language="javascript" src="knockout-2.2.0.debug.js"></script>
 		<script type="text/javascript" language="javascript" src="tristateInputField.js"></script>
@@ -25,79 +26,148 @@ It's so easy to create a tristate Checkbox with knockout.js and this plugin...
 		</script>
 	</body>
 </html>
+```
 
 
 Usage:
-
+------
+```javascript
 data-bind="tristate: someTristate"
+```
 
 the "tristate" binding accepts a "ko.tristateBoolean" or a "ko.observable"-wrapped "ko.tristateBoolean"
 
 ko.tristateBoolean
-==================
+------------------
 
-ko.tristateBoolean(initialValue, defaultValue)
+```javascript
+var tribool = ko.tristateBoolean(initialValue, defaultValue);
+```
 
 Creates a tristateBoolean.
 
-The initial value is set as the value of the tristateBoolean.
-	allowed values are:
-		- true
-		- false
-		- undefined / null
+The initial value is set as the value of the tristateBoolean.    
+    
+allowed values are:
+```javascript
+true
+false
+undefined or null
+```
 
-The default value is returned when converting the tristateBoolean back to a boolean and the tristateBoolean has an undefined value.
-	allowed values are:
-		- true
-		- false
+The default value is returned when converting the tristateBoolean back to a boolean and   
+the tristateBoolean has no value.    
+    
+allowed values are:
+```javascript
+true
+false
+```
+___
 
+```javascript
+tribool.defaultValue(/*bool?*/ defaultValue);
+```
 
-ko.isTristateBoolean(value)
+Get or set the default value.
+
+___
+
+```javascript
+tribool.hasValue();
+```
+
+Check if tribool has a value (true or false, but not undefined).
+
+___
+
+```javascript
+tribool.getWithDefaultifNull(/*bool?*/ defaultValue);
+```
+
+Get value as boolean.    
+    
+Returns the tribool's default value (or if provided the defaultValue argument) if tribool has no value.
+
+___
+
+```javascript
+tribool.and(/*tribool?*/ defaultValue);
+```
+
+And (&&) two tristateBooleans.
+
+___
+
+```javascript
+tribool.or(/*tribool?*/ defaultValue);
+```
+
+Or (||) two tristateBooleans.
+
+___
+
+```javascript
+tribool.not();
+```
+
+Returns not (!) the value of this tristateBoolean.
+
+helper functions
+----------------
+
+```javascript
+ko.isTristateBoolean(value);
+```
 
 Checks if value is a tristateBoolean.
 
+___
 
-ko.utils.unwrapTristateBoolean(value)
+```javascript
+ko.utils.unwrapTristateBoolean(value);
+```
 
 Unwraps an tristateBoolean or returns value.
 
+___
 
-ko.utils.getValidTristateBooleanValue(value)
+```javascript
+ko.utils.getValidTristateBooleanValue(value);
+```
 
 Returns value if valid value (true/false/undefined) or the bool representation of value.
 
 
 Credits
-=======
+-------
 
-get computed css Properties in JS
-http://stackoverflow.com/a/1955160 (17.02.2013)
-
-Super amazing, cross browser property function, based on http://thewikies.com/
-http://johndyer.name/native-browser-get-set-properties-in-javascript/ (15.02.2013)
-
-Cross-browser CSS3 Image-Free Custom Checkbox
-http://kubyshkin.ru/web/cross-browser-css3-image-free-custom-checkbox/
+* get computed css Properties in JS    
+	(http://stackoverflow.com/a/1955160)
+* Super amazing, cross browser property function    
+	(http://johndyer.name/native-browser-get-set-properties-in-javascript/)
+* Cross-browser CSS3 Image-Free Custom Checkbox    
+	(http://kubyshkin.ru/web/cross-browser-css3-image-free-custom-checkbox/)
 
 License
-=======
+-------
 
-Copyright (c) 2013 Sebastian J. Keller
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+Copyright (c) 2013 Sebastian J. Keller    
+    
+Permission is hereby granted, free of charge, to any person obtaining a copy    
+of this software and associated documentation files (the "Software"), to deal    
+in the Software without restriction, including without limitation the rights    
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell    
+copies of the Software, and to permit persons to whom the Software is    
+furnished to do so, subject to the following conditions:    
+    
+The above copyright notice and this permission notice shall be included in    
+all copies or substantial portions of the Software.    
+    
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,    
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER    
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,    
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN    
 THE SOFTWARE.
