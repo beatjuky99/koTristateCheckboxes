@@ -1,11 +1,15 @@
 koTristateCheckboxes
 ====================
 
-Tristate Boolean extension for Knockout.js
+Tristate Boolean extension for [knockout.js](http://knockoutjs.com/)
 
+```html
 <input type="checkbox" data-bind="tristate: someTristate" />
+```
 
-It's so easy to create a tristate Checkbox with knockout.js and this plugin...
+It's so easy to create a tristate Checkbox with [knockout.js](http://knockoutjs.com/) and this plugin...
+
+### Sample Markup
 
 ```html
 <html>
