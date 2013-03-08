@@ -97,7 +97,8 @@
     };
 
     var unwrapTristateBoolean = function(bool) {
-        return isTristateBoolean(bool) ? bool() : bool;
+        var b = ko.utils.unwrapObservable(bool);
+        return isTristateBoolean(b) ? b() : b;
     }
     var triToState = {
         "true" : 1,
@@ -112,49 +113,55 @@
     };
 
     var tristateBoolean = function(initialValue, defaultVal) {
-        var _latestVal = getValidTristateBooleanValue(unwrapTristateBoolean(initialValue));
-        var _defaultVal = !!unwrapTristateBoolean(defaultVal);
+        var _latestValHelper = initialValue;
+        var _latestVal = function() {
+            return getValidTristateBooleanValue(unwrapTristateBoolean(_latestValHelper));
+        };
+        var _defaultValHelper = defaultVal;
+        var _defaultVal = function() {
+            return !!unwrapTristateBoolean(_defaultValHelper);
+        };
 
         var tristate = function() {
             if (arguments.length > 0) {
                 //write
-                _latestVal = getValidTristateBooleanValue(unwrapTristateBoolean(arguments[0]));
+                _latestValHelper = arguments[0];
             } else {
-                 //read
-                return _latestVal;
+                //read
+                return _latestVal();
             }
         };
 
         tristate.defaultValue = function() {
             if (arguments.length === 0) {
                 //read
-                return _defaultVal;
+                return _defaultVal();
             } else {
                 //write
-                _defaultVal = !!unwrapTristateBoolean(arguments[0]);
+                _defaultValHelper = arguments[0];
             }
         };
 
         tristate.hasValue = function() {
-            return typeof _latestVal === "boolean";
+            return typeof _latestVal() === "boolean";
         };
 
         tristate.getWithDefaultifNull = function() {
-            return typeof _latestVal === "boolean" ? _latestVal : arguments.length ? !!unwrapTristateBoolean(arguments[0]) : _defaultVal;
+            return typeof _latestVal() === "boolean" ? _latestVal() : arguments.length ? !!unwrapTristateBoolean(arguments[0]) : _defaultVal();
         };
 
         tristate.__tristate__ = true;
 
         tristate.and = function(bool) {
-            return stateToTri[Math.min(triToState[_latestVal], triToState[unwrapTristateBoolean(bool)])];
+            return stateToTri[Math.min(triToState[_latestVal()], triToState[unwrapTristateBoolean(bool)])];
         };
 
         tristate.or = function(bool) {
-            return stateToTri[Math.max(triToState[_latestVal], triToState[unwrapTristateBoolean(bool)])];
+            return stateToTri[Math.max(triToState[_latestVal()], triToState[unwrapTristateBoolean(bool)])];
         };
 
         tristate.not = function() {
-            return stateToTri[1 - triToState[_latestVal]];
+            return stateToTri[1 - triToState[_latestVal()]];
         }
 
         return tristate;
@@ -216,7 +223,6 @@
 
         return true;
     }
-    
     /////////// KNOCKOUT BINDINGHANDLER STUFF  ///////////
 
     /**
@@ -232,7 +238,8 @@
     };
 
     var initFunc = function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-        var setAppropriateState = function(){};
+        var setAppropriateState = function() {
+        };
         var tristate = ko.computed({
             read : function() {
                 return ko.utils.unwrapObservable(valueAccessor());
@@ -243,7 +250,9 @@
                     _v(nv);
                 } else if (isTristateBoolean(_v)) {
                     _v(nv);
-                    setAppropriateState({___setState:nv});
+                    setAppropriateState({
+                        ___setState : nv
+                    });
                 }
             },
             disposeWhenNodeIsRemoved : element
@@ -253,8 +262,8 @@
 
             var flip = tristate.peek()();
 
-            (setAppropriateState = function(e) {
-                tristate.peek()((flip = e.___setState || flipNext[flip]));
+            ( setAppropriateState = function(e) {
+                tristate.peek()(( flip = e.___setState || flipNext[flip]));
                 switch(flip) {
                     case true:
                         element.setAttribute('checked', 'checked');
@@ -270,12 +279,16 @@
                         break;
                 }
                 return true;
-            })({___setState:flip});
-            
-            tristate.subscribe(function(nv){
-                setAppropriateState({___setState:nv()})
+            })({
+                ___setState : flip
             });
-            
+
+            tristate.subscribe(function(nv) {
+                setAppropriateState({
+                    ___setState : nv()
+                })
+            });
+
             ko.utils.registerEventHandler(element, 'change', setAppropriateState);
 
             addProperty(element, "tristate", function() {
@@ -299,7 +312,6 @@
             });
         }
     }
-    
     ko.bindingHandlers["tristate"] = {
         "init" : initFunc
     };
