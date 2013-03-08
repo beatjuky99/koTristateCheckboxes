@@ -31,7 +31,11 @@ It's so easy to create a tristate Checkbox with [knockout.js](http://knockoutjs.
 	</body>
 </html>
 ```
+### Known Limitations
 
+You can't use the css-Selector `:checked` on the tristate checkbox. It returns a false value (since it can only be `true` or `false`)
+Use `[checked="checked"]` for `true`-ish values    
+and `[tristate="tristate"]` for `undefined` values.
 
 Usage:
 ------
