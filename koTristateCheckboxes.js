@@ -125,7 +125,7 @@
         var tristate = function() {
             if (arguments.length > 0) {
                 //write
-                _latestValHelper = arguments[0];
+                ko.isObservable(_latestValHelper)?_latestValHelper(arguments[0]):_latestValHelper = arguments[0];
             } else {
                 //read
                 return _latestVal();
@@ -138,7 +138,7 @@
                 return _defaultVal();
             } else {
                 //write
-                _defaultValHelper = arguments[0];
+                ko.isObservable(_defaultValHelper)?_defaultValHelper(arguments[0]):_defaultValHelper = arguments[0];
             }
         };
 
