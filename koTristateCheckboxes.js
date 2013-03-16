@@ -96,8 +96,13 @@
         return typeof _val === "function" && _val.__tristate__;
     };
 
-    var unwrapTristateBoolean = function(bool) {
-        var b = ko.utils.unwrapObservable(bool);
+    var unwrapTristateBoolean = function(bool, peek) {
+        var b;
+        if (peek && ko.isObservable(bool)) {
+            b = bool.peek();
+        } else {
+            b = ko.utils.unwrapObservable(bool);
+        }
         return isTristateBoolean(b) ? b() : b;
     }
     var triToState = {
@@ -114,18 +119,31 @@
 
     var tristateBoolean = function(initialValue, defaultVal) {
         var _latestValHelper = initialValue;
-        var _latestVal = function() {
-            return getValidTristateBooleanValue(unwrapTristateBoolean(_latestValHelper));
+        var _latestVal = function(peek) {
+            if (!peek && !ko.isObservable(_latestValHelper)) {
+                ko.dependencyDetection.registerDependency(tristate);
+            }
+            return getValidTristateBooleanValue(unwrapTristateBoolean(_latestValHelper, peek));
         };
         var _defaultValHelper = defaultVal;
-        var _defaultVal = function() {
-            return !!unwrapTristateBoolean(_defaultValHelper);
+        var _defaultVal = function(peek) {
+            if (!peek && !ko.isObservable(_latestValHelper)) {
+                ko.dependencyDetection.registerDependency(tristate);
+            }
+            return !!unwrapTristateBoolean(_defaultValHelper, peek);
         };
 
-        var tristate = function() {
+        function tristate() {
             if (arguments.length > 0) {
                 //write
-                ko.isObservable(_latestValHelper)?_latestValHelper(arguments[0]):_latestValHelper = arguments[0];
+                if (ko.isObservable(_latestValHelper)) {
+                    _latestValHelper(arguments[0]);
+                } else if ((!tristate['equalityComparer']) || !tristate['equalityComparer'](_latestValHelper, arguments[0])) {
+                    tristate.valueWillMutate();
+                    _latestValHelper = arguments[0];
+                    tristate.valueHasMutated();
+                }
+                return this;
             } else {
                 //read
                 return _latestVal();
@@ -133,12 +151,19 @@
         };
 
         tristate.defaultValue = function() {
-            if (arguments.length === 0) {
+            if (arguments.length > 0) {
+                //write
+                if (ko.isObservable(_defaultValHelper)) {
+                    _defaultValHelper(arguments[0])
+                } else if ((!tristate['equalityComparer']) || !tristate['equalityComparer'](_defaultValHelper, arguments[0])) {
+                    tristate.valueWillMutate();
+                    _defaultValHelper = arguments[0];
+                    tristate.valueHasMutated();
+                }
+                return this;
+            } else {
                 //read
                 return _defaultVal();
-            } else {
-                //write
-                ko.isObservable(_defaultValHelper)?_defaultValHelper(arguments[0]):_defaultValHelper = arguments[0];
             }
         };
 
@@ -147,22 +172,44 @@
         };
 
         tristate.getWithDefaultifNull = function() {
+            //to make a valueChange event also happen when default is changed
+            _defaultVal();
+
             return typeof _latestVal() === "boolean" ? _latestVal() : arguments.length ? !!unwrapTristateBoolean(arguments[0]) : _defaultVal();
         };
 
         tristate.__tristate__ = true;
 
         tristate.and = function(bool) {
-            return stateToTri[Math.min(triToState[_latestVal()], triToState[unwrapTristateBoolean(bool)])];
+            return stateToTri[Math.min(triToState[_latestVal()], triToState[getValidTristateBooleanValue(unwrapTristateBoolean(bool))])];
         };
 
         tristate.or = function(bool) {
-            return stateToTri[Math.max(triToState[_latestVal()], triToState[unwrapTristateBoolean(bool)])];
+            return stateToTri[Math.max(triToState[_latestVal()], triToState[getValidTristateBooleanValue(unwrapTristateBoolean(bool))])];
         };
 
         tristate.not = function() {
             return stateToTri[1 - triToState[_latestVal()]];
         }
+        //immitate ko.observable behaviour
+        ko.subscribable.call(tristate);
+
+        tristate.peek = function() {
+            return _latestVal(true);
+        };
+        tristate.valueHasMutated = function() {
+            tristate["notifySubscribers"](_latestValue(true));
+        }
+        tristate.valueWillMutate = function() {
+            tristate["notifySubscribers"](_latestValue(true), "beforeChange");
+        }
+        ko.utils.extend(tristate, ko.observable['fn']);
+
+        ko.exportProperty(tristate, 'peek', tristate.peek);
+        ko.exportProperty(tristate, "valueHasMutated", tristate.valueHasMutated);
+        ko.exportProperty(tristate, "valueWillMutate", tristate.valueWillMutate);
+
+        tristate[ko.observable.protoProperty] = ko.observable;
 
         return tristate;
     }
