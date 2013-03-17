@@ -33,17 +33,44 @@ It's so easy to create a tristate Checkbox with [knockout.js](http://knockoutjs.
 ```
 ### Known Limitations
 
-You can't use the css-Selector `:checked` on the tristate checkbox. It returns a false value (since it can only be `true` or `false`)
-Use `[checked="checked"]` for `true`-ish values    
-and `[tristate="tristate"]` for `undefined` values.
+* requires at least IE 9
+* You can't use the css-Selector `:checked` on the tristate checkbox. It returns a false value (since it can only be `true` or `false`)    
+	Use `[checked="checked"]` for `true`-ish values    
+	and `[tristate="tristate"]` for `undefined` values.
 
 Usage:
 ------
-```javascript
+```html
 data-bind="tristate: someTristate"
 ```
 
-the "tristate" binding accepts a "ko.tristateBoolean" or a "ko.observable"-wrapped "ko.tristateBoolean"
+the "tristate" binding accepts a "ko.tristateBoolean" or a "ko.observable"-wrapped "ko.tristateBoolean"    
+
+```html
+data-bind="tristate: someTristate, tristateFontSize: anyValidFontSizeValue"
+```
+You can also specify a default fontSize, which is used if the fontSize is not set or below "8px"       
+(otherwise its forced to be at least 8px or set to 16px if font size is not set)    
+Example values for `anyValidFontSizeValue`:    
+```css
+12px
+1em
+1ex
+1in
+3cm
+40mm
+12pc
+12pt
+xx-small
+x-small
+small
+medium
+large
+x-large
+xx-large
+smaller
+larger
+```
 
 ko.tristateBoolean
 ------------------

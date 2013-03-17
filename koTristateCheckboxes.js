@@ -225,7 +225,7 @@
 
     /////////// TRISTATE INPUT ELEMENT CREATION ///////////
 
-    createTristateCheckbox = function(element) {
+    createTristateCheckbox = function(element, fontSizeInitValue) {
         if (element.nodeType !== 1 || element.nodeName.toLowerCase() !== "input" || element.type !== "checkbox") {
             return false;
         }
@@ -267,8 +267,15 @@
         };
 
         var style = getStyle(overlay, 'font-size'), parsed;
-        if (!style || !( parsed = parseFloat(style, 10)) || parsed < 0) {
-            tristateCont.style.fontSize = "16px";
+        if (!style || !( parsed = parseFloat(style, 10)) || parsed < 1) {
+            tristateCont.style.fontSize = fontSizeInitValue || "16px";
+        }
+        if(parsed && parsed < 8){
+            tristateCont.style.fontSize = fontSizeInitValue || "8px";
+        }
+        style = getStyle(overlay, 'font-size');
+        if(fontSizeInitValue && (!( parsed = parseFloat(style, 10))  || parsed < 8)){
+            tristateCont.style.fontSize = "8px";
         }
 
         return true;
@@ -290,6 +297,7 @@
     var initFunc = function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
         var setAppropriateState = function() {
         };
+        var fontSizeInitValue = ko.utils.unwrapObservable(allBindingsAccessor().tristateFontSize);
         var tristate = ko.computed({
             read : function() {
                 return valueAccessor();
@@ -300,7 +308,7 @@
             },
             disposeWhenNodeIsRemoved : element
         });
-        if (!ko.utils.domData.get(element, "isInited") && isTristateBoolean(tristate.peek()) && createTristateCheckbox(element)) {
+        if (!ko.utils.domData.get(element, "isInited") && isTristateBoolean(tristate.peek()) && createTristateCheckbox(element, fontSizeInitValue)) {
             ko.utils.domData.set(element, "isInited", true);
 
             var flip = tristate.peek()();

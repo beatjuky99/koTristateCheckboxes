@@ -9,7 +9,7 @@
 	display: block;
 	width: 0.875em;
 	height: 0.875em;
-	border: 0.0625em solid #ccc;
+	border: 0.125em solid #ccc;
 	background-color: #eee;
 	-webkit-border-radius: 0.25em;
 	-moz-border-radius: 0.25em;
@@ -23,11 +23,7 @@
 
 .tristate-checkbox > input[checked="checked"] + .tristateBox > .tristateOverlay {
 	left: 0.125em;
-	top: -0.125em;
-	*left: 0.0625em;
-	*top: -0.3125em;
-	left: 0.0625em\9;
-	top: -0.3125em\9;
+	top: 0em;
 	width: 0.875em;
 	height: 0.375em;
 	border-bottom: 0.125em solid #333;
@@ -37,8 +33,6 @@
 	-o-transform: rotate(-45deg);
 	-ms-transform: rotate(-45deg);
 	transform: rotate(-45deg);
-	filter: progid:DXImageTransform.Microsoft.Matrix(M11=0.7071067811865476, M12=0.7071067811865475, M21=-0.7071067811865475, M22=0.7071067811865476, sizingMethod='auto expand');
-	-ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.7071067811865476, M12=0.7071067811865475, M21=-0.7071067811865475, M22=0.7071067811865476, sizingMethod='auto expand')";
 	zoom: 1;
 	display: block;
 }
@@ -67,8 +61,6 @@
 	margin: 0;
 	z-index: 1;
 	opacity: 0;
-	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=0)";
 }
 
 .tristate-checkbox > input:active + .tristateBox, .tristate-checkbox > input:focus + .tristateBox {
