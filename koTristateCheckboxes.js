@@ -209,10 +209,13 @@
         ko.exportProperty(tristate, "valueHasMutated", tristate.valueHasMutated);
         ko.exportProperty(tristate, "valueWillMutate", tristate.valueWillMutate);
 
-        tristate[ko.observable.protoProperty] = ko.observable;
+        tristate[ko.observable.protoProperty] = tristateBoolean;
 
         return tristate;
-    }
+    };
+    
+    tristateBoolean[ko.observable.protoProperty] = ko.observable;
+    
     //exports
 
     ko["isTristateBoolean"] = isTristateBoolean;
@@ -289,18 +292,11 @@
         };
         var tristate = ko.computed({
             read : function() {
-                return ko.utils.unwrapObservable(valueAccessor());
+                return valueAccessor();
             },
             write : function(nv) {
                 var _v = valueAccessor();
-                if (ko.isObservable(_v)) {
-                    _v(nv);
-                } else if (isTristateBoolean(_v)) {
-                    _v(nv);
-                    setAppropriateState({
-                        ___setState : nv
-                    });
-                }
+                _v(nv);
             },
             disposeWhenNodeIsRemoved : element
         });
