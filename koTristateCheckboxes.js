@@ -314,7 +314,12 @@
             var flip = tristate.peek()();
 
             ( setAppropriateState = function(e) {
-                tristate.peek()(( flip = e.___setState || flipNext[flip]));
+                if("___setState" in e){
+                    flip = e.___setState;
+                } else {
+                    flip = flipNext[flip];
+                }
+                tristate.peek()(flip);
                 switch(flip) {
                     case true:
                         element.setAttribute('checked', 'checked');
