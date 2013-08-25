@@ -14,7 +14,7 @@ It's so easy to create a tristate Checkbox with [knockout.js](http://knockoutjs.
 ```html
 <html>
 	<head>
-		<script type="text/javascript" language="javascript" src="knockout-2.2.0.debug.js"></script>
+		<script type="text/javascript" language="javascript" src="knockout-2.3.0.js"></script>
 		<script type="text/javascript" language="javascript" src="tristateInputField.js"></script>
 		<link type="text/css" rel="stylesheet" href="tristateInputField.css">
 	</head>
@@ -24,8 +24,8 @@ It's so easy to create a tristate Checkbox with [knockout.js](http://knockoutjs.
 		</div>
 		<script>
 			(function(){
-				var __test = {someTristate : ko.observable(ko.tristateBoolean(undefined, true))};
-				ko.applyBindings(__test, document.getElementById('#__test'));
+				var __test = {someTristate : ko.tristateBoolean(undefined, true)};
+				ko.applyBindings(__test, document.getElementById('__test'));
 			})();
 		</script>
 	</body>

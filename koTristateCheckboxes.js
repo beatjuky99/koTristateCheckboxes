@@ -198,10 +198,10 @@
             return _latestVal(true);
         };
         tristate.valueHasMutated = function() {
-            tristate["notifySubscribers"](_latestValue(true));
+            tristate["notifySubscribers"](_latestVal(true));
         }
         tristate.valueWillMutate = function() {
-            tristate["notifySubscribers"](_latestValue(true), "beforeChange");
+            tristate["notifySubscribers"](_latestVal(true), "beforeChange");
         }
         ko.utils.extend(tristate, ko.observable['fn']);
 
